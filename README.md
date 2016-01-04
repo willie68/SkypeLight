@@ -4,3 +4,5 @@ The external hardware is an arduino nano v3 with a adafruit neopixel jewel (http
 (like this: http://www.seeedstudio.com/wiki/Grove_-_4-Digit_Display)
 The jewel is coverd with a translucent cube.
 The data exchange is very simple, using the USB-COM port driver of the arduino nano. 
+See more information on my google+ account.
+https://plus.google.com/+WilfriedKlaas/posts/TpiskEiGzVi
