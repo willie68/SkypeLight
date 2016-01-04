@@ -1,0 +1,39 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SkypeLight.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Comport" Type="System.String" Scope="User">
+      <Value Profile="(Default)">COM1</Value>
+    </Setting>
+    <Setting Name="WindowLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="ColorRed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">255,0,0</Value>
+    </Setting>
+    <Setting Name="ColorGreen" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0,255,0</Value>
+    </Setting>
+    <Setting Name="ColorYellow" Type="System.String" Scope="User">
+      <Value Profile="(Default)">255,160,0</Value>
+    </Setting>
+    <Setting Name="ColorBlue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0,0,255</Value>
+    </Setting>
+    <Setting Name="ColorWhite" Type="System.String" Scope="User">
+      <Value Profile="(Default)">255,255,255</Value>
+    </Setting>
+    <Setting Name="ColorBlack" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0,0,0</Value>
+    </Setting>
+    <Setting Name="ColorError" Type="System.String" Scope="User">
+      <Value Profile="(Default)">32,32,32</Value>
+    </Setting>
+    <Setting Name="Time_Brightness" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7</Value>
+    </Setting>
+    <Setting Name="Show_Date" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
