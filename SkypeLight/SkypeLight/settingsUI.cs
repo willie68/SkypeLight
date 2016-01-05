@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace SkypeLight
 {
-    public partial class Form1 : Form
+    public partial class settingsUI : Form
     {
         enum MyColor { RED, YELLOW, GREEN, BLUE, WHITE, BLACK };
         byte[] digitToSegment = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x47, 0x79, 0x71 };
@@ -35,8 +35,9 @@ namespace SkypeLight
         private String ColorBlack = "0,0,0";
         private String ColorError = "32,32,32";
 
+        private ArduinoCom arduinoCom;
 
-        public Form1()
+        public settingsUI()
         {
             InitializeComponent();
         }
@@ -54,12 +55,15 @@ namespace SkypeLight
                 cbComport.Items.Add(names[i]);
                 Debug.WriteLine(names[i]);
             }
+            arduinoCom = new ArduinoCom();
+
             String comportString = Properties.Settings.Default.Comport;
             Debug.WriteLine(comportString);
             if (comportString != null)
             {
                 cbComport.Text = comportString;
                 open();
+                arduinoCom.setComPort(cbComport.Text);
             }
 
             timeBrightness.Value = Properties.Settings.Default.Time_Brightness;
