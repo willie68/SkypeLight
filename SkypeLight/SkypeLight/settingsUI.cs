@@ -435,6 +435,12 @@ namespace SkypeLight
             }
             else
             {
+                DateTime updatetime = now.AddSeconds(-10.0);
+                if (updatetime > lastSendet)
+                {
+                    sendTime();
+                    lastSendet = DateTime.Now;
+                }
                 if (now.AddSeconds(-30.0) > lastSendet)
                 {
                     Debug.WriteLine("Timer 1: resend color");
