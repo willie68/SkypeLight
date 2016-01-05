@@ -15,11 +15,7 @@ namespace SkypeLight
 {
     public partial class settingsUI : Form
     {
-        enum MyColor { RED, YELLOW, GREEN, BLUE, WHITE, BLACK };
-        byte[] digitToSegment = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x47, 0x79, 0x71 };
-        private SerialPort ComPort;
-
-        private MyColor lastColor;
+        private Color lastColor;
         private bool doUpdate;
         private DateTime lastSendet;
         private LyncClient lyncClient;
@@ -62,7 +58,6 @@ namespace SkypeLight
             if (comportString != null)
             {
                 cbComport.Text = comportString;
-                open();
                 arduinoCom.setComPort(cbComport.Text);
             }
 
@@ -81,8 +76,24 @@ namespace SkypeLight
 
             rbBlack.Checked = true;
             cbBlink.Checked = false;
-            lastColor = MyColor.BLACK;
+            lastColor = Color.Black;
             connectSkype();
+        }
+
+        private void connectSkype()
+        {
+            bool skypeAvailible = checkSkype();
+            skypeAvailible = skypeAvailible && !cbManual.Checked;
+
+            groupBox1.Enabled = !skypeAvailible;
+            cbBlink.Enabled = !skypeAvailible;
+            toolStripMenuItem1.Visible = !skypeAvailible;
+            toolStripMenuItem2.Visible = !skypeAvailible;
+            toolStripMenuItem3.Visible = !skypeAvailible;
+            toolStripMenuItem4.Visible = !skypeAvailible;
+            toolStripMenuItem5.Visible = !skypeAvailible;
+            toolStripMenuItem6.Visible = !skypeAvailible;
+            toolStripMenuItem7.Visible = !skypeAvailible;
         }
 
         private bool checkSkype()
@@ -129,14 +140,15 @@ namespace SkypeLight
                 if ((lyncClient.Self != null) && (lyncClient.Self.Contact != null))
                 {
                     lyncClient.Self.Contact.ContactInformationChanged += Contact_ContactInformationChanged;
-                    callbackEnabled = true; 
+                    callbackEnabled = true;
                 }
             }
             return checkAvailability();
-            
+
         }
-        
-        private bool checkAvailability() {
+
+        private bool checkAvailability()
+        {
             if (!cbManual.Checked)
             {
                 if (lyncClient != null)
@@ -226,13 +238,13 @@ namespace SkypeLight
         {
             doUpdate = true;
         }
-        
+
         /// <summary>
-                 /// Identify if a particular SystemException is one of the exceptions which may be thrown
-                 /// by the Lync Model API.
-                 /// </summary>
-                 /// <param name="ex"></param>
-                 /// <returns></returns>
+        /// Identify if a particular SystemException is one of the exceptions which may be thrown
+        /// by the Lync Model API.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
         private bool IsLyncException(SystemException ex)
         {
             return
@@ -252,7 +264,7 @@ namespace SkypeLight
         {
             if (rbRed.Checked)
             {
-                sendColor(MyColor.RED);
+                sendColor(Color.Red);
             }
         }
 
@@ -260,7 +272,7 @@ namespace SkypeLight
         {
             if (rbYellow.Checked)
             {
-                sendColor(MyColor.YELLOW);
+                sendColor(Color.Yellow);
             }
         }
 
@@ -268,7 +280,7 @@ namespace SkypeLight
         {
             if (rbGreen.Checked)
             {
-                sendColor(MyColor.GREEN);
+                sendColor(Color.Green);
             }
         }
 
@@ -276,108 +288,62 @@ namespace SkypeLight
         {
             if (rbBlack.Checked)
             {
-                sendColor(MyColor.BLACK);
+                sendColor(Color.Black);
             }
         }
 
-        private void open()
+        private void sendColor(Color color)
         {
-            if (ComPort == null)
-            {
-                ComPort = new SerialPort();
-            }
-            if (!ComPort.IsOpen)
-            {
-                if (cbComport.Text != null && !cbComport.Text.Equals(""))
-                {
-                    ComPort.PortName = cbComport.Text;
-                    ComPort.BaudRate = 9600;
-                    try
-                    {
-                        ComPort.Open();
-                        ComPort.RtsEnable = false;
-                        ComPort.DtrEnable = false;
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }            }
-        }
-
-        private void close()
-        {
-            if (ComPort != null && ComPort.IsOpen)
-            {
-                ComPort.Close();
-            }
-        }
-
-        private void sendColor(MyColor color)
-        {
-            sendDate();
-            sendTime();
             bool blink = cbBlink.Checked;
+            arduinoCom.setColorBlink(blink);
             lastColor = color;
-            open();
-            if (ComPort.IsOpen)
+            Icon icon;
+            String title = "SkypeLight: ";
+            arduinoCom.sendColor(color);
+            if (color.Equals(Color.Black))
             {
-                Icon icon;
-                String data = "#0,";
-                String title = "SkypeLight: ";
-                switch (color)
-                {
-                    case MyColor.BLACK:
-                        icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
-                        data = data + ColorBlack;
-                        title = title + "Aus";
-                        break;
-                    case MyColor.BLUE:
-                        icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
-                        data = data + ColorBlue;
-                        title = title + "Blau";
-                        break;
-                    case MyColor.GREEN:
-                        icon = Icon.FromHandle(((Bitmap)imageList1.Images[2]).GetHicon());
-                        data = data + ColorGreen;
-                        title = title + "Grün";
-                        break;
-                    case MyColor.RED:
-                        icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
-                        data = data + ColorRed;
-                        title = title + "Rot";
-                        break;
-                    case MyColor.YELLOW:
-                        icon = Icon.FromHandle(((Bitmap)imageList1.Images[1]).GetHicon());
-                        data = data + ColorYellow;
-                        title = title + "Gelb";
-                        break;
-                    case MyColor.WHITE:
-                        icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
-                        data = data + ColorWhite;
-                        title = title + "Weiß";
-                        break;
-                    default:
-                        // kein connect
-                        icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
-                        data = data + ColorError;
-                        title = title + "?";
-                        blink = true;
-                        break;
-                }
-
-                notifyIcon1.Icon = icon;
-                this.Icon = icon;
-                notifyIcon1.Text = title;
-                if (blink)
-                {
-                    data = data + "b";
-                }
-                data = data + "*";
-                ComPort.WriteLine(data);
-                lastSendet = DateTime.Now;
-                Debug.WriteLine(data);
+                icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
+                title = title + "Aus";
             }
+            else if (color.Equals(Color.Blue))
+            {
+                icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
+                title = title + "Blau";
+            }
+            else if (color.Equals(Color.Green))
+            {
+                icon = Icon.FromHandle(((Bitmap)imageList1.Images[2]).GetHicon());
+                title = title + "Grün";
+            }
+            else if (color.Equals(Color.Red))
+            {
+                icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
+                title = title + "Rot";
+            }
+            else if (color.Equals(Color.Yellow))
+            {
+                icon = Icon.FromHandle(((Bitmap)imageList1.Images[1]).GetHicon());
+                title = title + "Gelb";
+            }
+            else if (color.Equals(Color.White))
+            {
+                icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
+                title = title + "Weiß";
+            }
+            else
+            {
+                // kein connect
+                icon = Icon.FromHandle(((Bitmap)imageList1.Images[0]).GetHicon());
+                title = title + "?";
+                blink = true;
+            }
+
+            notifyIcon1.Icon = icon;
+            this.Icon = icon;
+            notifyIcon1.Text = title;
+            lastSendet = DateTime.Now;
         }
+
 
         private void sendDate()
         {
@@ -385,59 +351,37 @@ namespace SkypeLight
             {
 
                 DateTime now = DateTime.Now;
-                open();
-                if (ComPort.IsOpen)
-                {
-                    String data = "d";
-                    data = data + timeBrightness.Value.ToString();
-                    data = data + ",";
-                    int day = now.Day;
-                    int month = now.Month;
+                arduinoCom.setDisplayBrightness((int)timeBrightness.Value);
 
-                    int tens = day / 10;
-                    data = data + (digitToSegment[tens % 16]).ToString() + ",";
-                    int ones = day - (tens * 10);
-                    data = data + (digitToSegment[ones % 16] + 128).ToString() + ",";
+                int day = now.Day;
+                int month = now.Month;
 
-                    tens = month / 10;
-                    data = data + (digitToSegment[tens % 16]).ToString() + ",";
-                    ones = month - (tens * 10);
-                    data = data + (digitToSegment[ones % 16]).ToString();
+                byte dayTens = (byte)(day / 10);
+                byte dayOnes = (byte)(day % 10);
 
-                    data = data + "*";
-                    ComPort.WriteLine(data);
-                    Debug.WriteLine(data);
-                    System.Threading.Thread.Sleep(1000);
-                }
+                byte monthTens = (byte)(month / 10);
+                byte monthOnes = (byte)(month % 10);
+
+                arduinoCom.setDigits(dayTens, dayOnes, monthTens, monthOnes, true);
             }
         }
 
         private void sendTime()
         {
             DateTime now = DateTime.Now;
-            open();
-            if (ComPort.IsOpen)
-            {
-                String data = "d";
-                data = data + timeBrightness.Value.ToString();
-                data = data + ",";
-                int hour = now.Hour;
-                int min = now.Minute;
+            arduinoCom.setDisplayBrightness((int)timeBrightness.Value);
+            arduinoCom.setDotBlink(true);
 
-                int tens = hour / 10;
-                data = data + (digitToSegment[tens % 16]).ToString() + ",";
-                int ones = hour - (tens * 10);
-                data = data + (digitToSegment[ones % 16] + 128).ToString() + ",";
+            int hour = now.Hour;
+            int min = now.Minute;
 
-                tens = min / 10;
-                data = data + (digitToSegment[tens % 16]).ToString() + ",";
-                ones = min  - (tens * 10);
-                data = data + (digitToSegment[ones % 16]).ToString();
+            byte hourTens = (byte)(hour / 10);
+            byte hourOnes = (byte)(hour % 10);
 
-                data = data + ",b*";
-                ComPort.WriteLine(data);
-                Debug.WriteLine(data);
-            }
+            byte minTens = (byte)(min / 10);
+            byte minOnes = (byte)(min % 10);
+
+            arduinoCom.setDigits(hourTens, hourOnes, minTens, minOnes, true);
         }
 
         private void cbBlink_CheckedChanged(object sender, EventArgs e)
@@ -447,13 +391,9 @@ namespace SkypeLight
 
         private void cbComport_SelectedIndexChanged(object sender, EventArgs e)
         {
-            close();
-            open();
-            if (ComPort.IsOpen)
-            {
-                Properties.Settings.Default.Comport = cbComport.Text;
-                Properties.Settings.Default.Save();
-            }
+            arduinoCom.setComPort(cbComport.Text);
+            Properties.Settings.Default.Comport = cbComport.Text;
+            Properties.Settings.Default.Save();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -507,28 +447,12 @@ namespace SkypeLight
                 connectSkype();
             }
         }
- 
-        private void connectSkype()
-        {
-            bool skypeAvailible = checkSkype();
-            skypeAvailible = skypeAvailible && !cbManual.Checked;
-
-            groupBox1.Enabled = !skypeAvailible;
-            cbBlink.Enabled = !skypeAvailible;
-            toolStripMenuItem1.Visible = !skypeAvailible;
-            toolStripMenuItem2.Visible = !skypeAvailible;
-            toolStripMenuItem3.Visible = !skypeAvailible;
-            toolStripMenuItem4.Visible = !skypeAvailible;
-            toolStripMenuItem5.Visible = !skypeAvailible;
-            toolStripMenuItem6.Visible = !skypeAvailible;
-            toolStripMenuItem7.Visible = !skypeAvailible;
-        }
 
         private void rbBlue_CheckedChanged(object sender, EventArgs e)
         {
             if (rbBlue.Checked)
             {
-                sendColor(MyColor.BLUE);
+                sendColor(Color.Blue);
             }
         }
 
@@ -536,7 +460,7 @@ namespace SkypeLight
         {
             if (rbWhite.Checked)
             {
-                sendColor(MyColor.WHITE);
+                sendColor(Color.White);
             }
         }
 
@@ -608,23 +532,23 @@ namespace SkypeLight
 
         private void cbManual_CheckedChanged(object sender, EventArgs e)
         {
-            connectSkype();            
+            connectSkype();
         }
 
         private void timeBrightness_ValueChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Time_Brightness = (int) timeBrightness.Value;
+            Properties.Settings.Default.Time_Brightness = (int)timeBrightness.Value;
             Properties.Settings.Default.Save();
-//            sendDate();
-//            sendTime();
+            //            sendDate();
+            //            sendTime();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.Show_Date = checkBox1.Checked;
             Properties.Settings.Default.Save();
-//            sendDate();
-//            sendTime();
+            //            sendDate();
+            //            sendTime();
         }
     }
 }
