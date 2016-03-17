@@ -35,7 +35,8 @@ namespace SkypeLight
             if (ComPort == null)
             {
                 return false;
-            } else
+            }
+            else
             {
                 return ComPort.IsOpen;
             }
@@ -50,16 +51,23 @@ namespace SkypeLight
         private void sendCommand(string command)
         {
             lastCommand = command;
-            open();
-            ComPort.WriteLine(command);
-            String line = "";
-            while (ComPort.BytesToRead > 0)
+            try
             {
-                line = line + (char) ComPort.ReadChar();
+                open();
+                ComPort.WriteLine(command);
+                String line = "";
+                while (ComPort.BytesToRead > 0)
+                {
+                    line = line + (char)ComPort.ReadChar();
+                }
+                lastSendet = DateTime.Now;
+                Debug.WriteLine(command);
+                Debug.WriteLine(line);
             }
-            lastSendet = DateTime.Now;
-            Debug.WriteLine(command);
-            Debug.WriteLine(line);
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine("can't connet to skypelight.");
+            }
         }
 
         private void open()
@@ -167,7 +175,7 @@ namespace SkypeLight
         {
             if ((index > 0) && (index < 5))
             {
-                digits[index-1] = digit;
+                digits[index - 1] = digit;
             }
         }
 

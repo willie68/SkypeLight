@@ -16,6 +16,7 @@ TM1637Display display(CLK, DIO);
 // values for the display
 byte displayValues[4];
 byte eselValues[4] = {249, 109, 249, 56};
+byte easyValues[4] = {249, 247, 109, 2+4+32+64};
 
 void setup() {
   // Initialisieren der seriellen Verbindung zum Host
@@ -205,7 +206,7 @@ void fadeAllColors() {
 
   display.setBrightness(0x04);
   display.setColon(false);
-  display.setSegments(eselValues);
+  display.setSegments(easyValues);
   delay(100);
 }
 
