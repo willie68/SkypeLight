@@ -155,6 +155,8 @@ void showDHT() {
 // h zeigt die aktuelle Luftfeuchtigkeit
 // Zeit
 // z setzt die aktuelle Uhrzeit auf einen neuen Wert
+// Datum
+// r zeigt das aktuelle Datum an
 // Info
 // ? sendet die aktuellen Informationen
 
@@ -218,6 +220,10 @@ void processPCData() {
   } else if (myChar == 'h') {
     Serial.println("show humidity");
     showHumidity();
+    delay(3000);
+  } else if (myChar == 'r') {
+    Serial.println("show date");
+    showDate();
     delay(3000);
   } else if (myChar == '#') {
     // Jetzt zunächst den Index und die 3 Farben lesen
@@ -406,6 +412,16 @@ void showTime() {
   DateTime now = rtc.now();
   byte h = now.hour();
   byte m = now.minute();
+  display.setBrightness(displayBrightness);
+  display.showNumberDec(m, true, 2, 2);
+  display.showNumberDec(h, false, 2, 0);
+}
+
+void showDate() {
+  DateTime now = rtc.now();
+  byte h = now.day();
+  byte m = now.month();
+  display.setColon(false);
   display.setBrightness(displayBrightness);
   display.showNumberDec(m, true, 2, 2);
   display.showNumberDec(h, false, 2, 0);

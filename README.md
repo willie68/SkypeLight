@@ -2,7 +2,7 @@
 A program for showing the actual "Skype for Business"/ Lync status with an external hardware.
 The external hardware is an arduino nano v3 with a adafruit neopixel jewel (https://www.adafruit.com/products/2226) and a tm1631 display 
 (like this: http://www.seeedstudio.com/wiki/Grove_-_4-Digit_Display)
-The jewel is coverd with a translucent cube.
+The jewel is covered with a translucent cube.
 The data exchange is very simple, using the USB-COM port driver of the arduino nano. 
 See more information on my google+ account.
 https://plus.google.com/+WilfriedKlaas/posts/TpiskEiGzVi
@@ -21,13 +21,13 @@ For the TM1637 Display you need my fork of the TM1637Display lib. (https://githu
 
 ## Controll via Serial Interface
 
-You can controll the skyplight via a serial control interface.
+You can control the skyplight via a serial control interface.
 
 The following commands are known:
 
 ### RGB LEDs
 
-to controll the RGB LEDs you must send a command with the Format "#index,r,g,b['b']" with
+to control the RGB LEDs you must send a command with the Format "#index,r,g,b['b']" with
 
 - index: 0 for all LEDs, 1..MAX_LEDS for a single LED
 - r: integer value of red 0..255
@@ -41,7 +41,7 @@ sending the command format for the display "d(b),d1,d2,d3,d4*"
 
 example d15,249,109,249,56* means ESEL
 
-- b brighttness from 0..15
+- b brightness from 0..15
 - D1, D2, D3, D4 are the single segments
 -  D1,3,4 have 7 segments, D2 has the colon as an 8's 
 
@@ -49,7 +49,7 @@ example d15,249,109,249,56* means ESEL
 
 b sets the brightness of the default display, 0..15
 
-### Temperatur
+### Temperature
 
 a single T show the actual temperature (from the DHT 22 Sensor)
 
@@ -60,6 +60,10 @@ h show the actual humidity
 ### Time
 
 z sets the actual time of the RTC, format z yyyy,mm,dd,hh,mm,ss
+
+### Date
+
+r show the actual date
 
 ### Info
 
