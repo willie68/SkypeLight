@@ -58,6 +58,7 @@
             this.timeBrightness = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.lblInfo = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -68,20 +69,18 @@
             // 
             this.cbComport.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbComport.FormattingEnabled = true;
-            this.cbComport.Location = new System.Drawing.Point(85, 15);
-            this.cbComport.Margin = new System.Windows.Forms.Padding(4);
+            this.cbComport.Location = new System.Drawing.Point(64, 12);
             this.cbComport.Name = "cbComport";
-            this.cbComport.Size = new System.Drawing.Size(105, 24);
+            this.cbComport.Size = new System.Drawing.Size(80, 21);
             this.cbComport.TabIndex = 0;
             this.cbComport.SelectedIndexChanged += new System.EventHandler(this.cbComport_SelectedIndexChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 18);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(12, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 17);
+            this.label1.Size = new System.Drawing.Size(46, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Comport";
             // 
@@ -93,11 +92,9 @@
             this.groupBox1.Controls.Add(this.rbGreen);
             this.groupBox1.Controls.Add(this.rbYellow);
             this.groupBox1.Controls.Add(this.rbRed);
-            this.groupBox1.Location = new System.Drawing.Point(20, 48);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Location = new System.Drawing.Point(15, 39);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(172, 104);
+            this.groupBox1.Size = new System.Drawing.Size(129, 84);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Farbe";
@@ -105,10 +102,9 @@
             // rbWhite
             // 
             this.rbWhite.AutoSize = true;
-            this.rbWhite.Location = new System.Drawing.Point(96, 49);
-            this.rbWhite.Margin = new System.Windows.Forms.Padding(4);
+            this.rbWhite.Location = new System.Drawing.Point(72, 40);
             this.rbWhite.Name = "rbWhite";
-            this.rbWhite.Size = new System.Drawing.Size(62, 21);
+            this.rbWhite.Size = new System.Drawing.Size(50, 17);
             this.rbWhite.TabIndex = 5;
             this.rbWhite.TabStop = true;
             this.rbWhite.Text = "Weiß";
@@ -118,10 +114,9 @@
             // rbBlue
             // 
             this.rbBlue.AutoSize = true;
-            this.rbBlue.Location = new System.Drawing.Point(96, 21);
-            this.rbBlue.Margin = new System.Windows.Forms.Padding(4);
+            this.rbBlue.Location = new System.Drawing.Point(72, 17);
             this.rbBlue.Name = "rbBlue";
-            this.rbBlue.Size = new System.Drawing.Size(57, 21);
+            this.rbBlue.Size = new System.Drawing.Size(46, 17);
             this.rbBlue.TabIndex = 4;
             this.rbBlue.TabStop = true;
             this.rbBlue.Text = "Blau";
@@ -131,10 +126,9 @@
             // rbBlack
             // 
             this.rbBlack.AutoSize = true;
-            this.rbBlack.Location = new System.Drawing.Point(96, 78);
-            this.rbBlack.Margin = new System.Windows.Forms.Padding(4);
+            this.rbBlack.Location = new System.Drawing.Point(72, 63);
             this.rbBlack.Name = "rbBlack";
-            this.rbBlack.Size = new System.Drawing.Size(53, 21);
+            this.rbBlack.Size = new System.Drawing.Size(43, 17);
             this.rbBlack.TabIndex = 3;
             this.rbBlack.TabStop = true;
             this.rbBlack.Text = "Aus";
@@ -144,10 +138,9 @@
             // rbGreen
             // 
             this.rbGreen.AutoSize = true;
-            this.rbGreen.Location = new System.Drawing.Point(15, 78);
-            this.rbGreen.Margin = new System.Windows.Forms.Padding(4);
+            this.rbGreen.Location = new System.Drawing.Point(11, 63);
             this.rbGreen.Name = "rbGreen";
-            this.rbGreen.Size = new System.Drawing.Size(61, 21);
+            this.rbGreen.Size = new System.Drawing.Size(48, 17);
             this.rbGreen.TabIndex = 2;
             this.rbGreen.TabStop = true;
             this.rbGreen.Text = "Grün";
@@ -157,10 +150,9 @@
             // rbYellow
             // 
             this.rbYellow.AutoSize = true;
-            this.rbYellow.Location = new System.Drawing.Point(15, 49);
-            this.rbYellow.Margin = new System.Windows.Forms.Padding(4);
+            this.rbYellow.Location = new System.Drawing.Point(11, 40);
             this.rbYellow.Name = "rbYellow";
-            this.rbYellow.Size = new System.Drawing.Size(59, 21);
+            this.rbYellow.Size = new System.Drawing.Size(47, 17);
             this.rbYellow.TabIndex = 1;
             this.rbYellow.TabStop = true;
             this.rbYellow.Text = "Gelb";
@@ -170,10 +162,9 @@
             // rbRed
             // 
             this.rbRed.AutoSize = true;
-            this.rbRed.Location = new System.Drawing.Point(15, 21);
-            this.rbRed.Margin = new System.Windows.Forms.Padding(4);
+            this.rbRed.Location = new System.Drawing.Point(11, 17);
             this.rbRed.Name = "rbRed";
-            this.rbRed.Size = new System.Drawing.Size(51, 21);
+            this.rbRed.Size = new System.Drawing.Size(42, 17);
             this.rbRed.TabIndex = 0;
             this.rbRed.TabStop = true;
             this.rbRed.Text = "Rot";
@@ -183,10 +174,9 @@
             // cbBlink
             // 
             this.cbBlink.AutoSize = true;
-            this.cbBlink.Location = new System.Drawing.Point(35, 159);
-            this.cbBlink.Margin = new System.Windows.Forms.Padding(4);
+            this.cbBlink.Location = new System.Drawing.Point(26, 129);
             this.cbBlink.Name = "cbBlink";
-            this.cbBlink.Size = new System.Drawing.Size(76, 21);
+            this.cbBlink.Size = new System.Drawing.Size(61, 17);
             this.cbBlink.TabIndex = 4;
             this.cbBlink.Text = "Blinken";
             this.cbBlink.UseVisualStyleBackColor = true;
@@ -219,66 +209,66 @@
             this.wiederherstellenToolStripMenuItem,
             this.toolStripMenuItem8});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(197, 218);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(163, 186);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.BackColor = System.Drawing.Color.Red;
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(196, 26);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.BackColor = System.Drawing.Color.Yellow;
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(196, 26);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.BackColor = System.Drawing.Color.Lime;
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(196, 26);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItem3.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.BackColor = System.Drawing.Color.Blue;
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(196, 26);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItem4.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.BackColor = System.Drawing.Color.White;
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(196, 26);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.BackColor = System.Drawing.Color.Black;
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(196, 26);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItem6.Click += new System.EventHandler(this.toolStripMenuItem6_Click);
             // 
             // toolStripMenuItem7
             // 
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(193, 6);
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(159, 6);
             // 
             // wiederherstellenToolStripMenuItem
             // 
             this.wiederherstellenToolStripMenuItem.Name = "wiederherstellenToolStripMenuItem";
-            this.wiederherstellenToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
+            this.wiederherstellenToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.wiederherstellenToolStripMenuItem.Text = "Wiederherstellen";
             this.wiederherstellenToolStripMenuItem.Click += new System.EventHandler(this.wiederherstellenToolStripMenuItem_Click);
             // 
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(196, 26);
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItem8.Text = "Beenden";
             this.toolStripMenuItem8.Click += new System.EventHandler(this.toolStripMenuItem8_Click);
             // 
@@ -293,9 +283,10 @@
             // cbManual
             // 
             this.cbManual.AutoSize = true;
-            this.cbManual.Location = new System.Drawing.Point(116, 159);
+            this.cbManual.Location = new System.Drawing.Point(87, 129);
+            this.cbManual.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbManual.Name = "cbManual";
-            this.cbManual.Size = new System.Drawing.Size(79, 21);
+            this.cbManual.Size = new System.Drawing.Size(63, 17);
             this.cbManual.TabIndex = 5;
             this.cbManual.Text = "Manuell";
             this.cbManual.UseVisualStyleBackColor = true;
@@ -305,51 +296,66 @@
             // 
             this.groupBox2.Controls.Add(this.timeBrightness);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Location = new System.Drawing.Point(201, 48);
+            this.groupBox2.Location = new System.Drawing.Point(151, 39);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(77, 104);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Size = new System.Drawing.Size(78, 84);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Zeit/Datum";
             // 
             // timeBrightness
             // 
-            this.timeBrightness.Location = new System.Drawing.Point(6, 49);
+            this.timeBrightness.Location = new System.Drawing.Point(12, 40);
+            this.timeBrightness.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.timeBrightness.Maximum = new decimal(new int[] {
             7,
             0,
             0,
             0});
             this.timeBrightness.Name = "timeBrightness";
-            this.timeBrightness.Size = new System.Drawing.Size(65, 22);
+            this.timeBrightness.Size = new System.Drawing.Size(49, 20);
             this.timeBrightness.TabIndex = 1;
             this.timeBrightness.ValueChanged += new System.EventHandler(this.timeBrightness_ValueChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 21);
+            this.label2.Location = new System.Drawing.Point(12, 17);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 17);
+            this.label2.Size = new System.Drawing.Size(50, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "Helligkeit";
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(207, 159);
+            this.checkBox1.Location = new System.Drawing.Point(155, 129);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(71, 21);
+            this.checkBox1.Size = new System.Drawing.Size(57, 17);
             this.checkBox1.TabIndex = 6;
             this.checkBox1.Text = "Datum";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // lblInfo
+            // 
+            this.lblInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.lblInfo.Location = new System.Drawing.Point(151, 12);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.Size = new System.Drawing.Size(77, 21);
+            this.lblInfo.TabIndex = 7;
+            this.lblInfo.Text = "Info";
+            // 
             // settingsUI
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(290, 191);
+            this.ClientSize = new System.Drawing.Size(240, 155);
+            this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.cbBlink);
@@ -359,7 +365,6 @@
             this.Controls.Add(this.cbComport);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "settingsUI";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -408,6 +413,7 @@
         private System.Windows.Forms.NumericUpDown timeBrightness;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label lblInfo;
     }
 }
 

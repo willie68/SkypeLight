@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Lync.Model;
-using System.IO.Ports;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.IO.Ports;
+using System.Text;
+using System.Windows.Forms;
 
 namespace SkypeLight
 {
@@ -18,9 +13,7 @@ namespace SkypeLight
         private Color lastColor;
         private bool doUpdate;
         private DateTime lastSendet;
-        private LyncClient lyncClient;
         private int count;
-        private bool callbackEnabled = false;
         private bool showdate = false;
 
         private String ColorRed = "255,0,0";
@@ -32,6 +25,9 @@ namespace SkypeLight
         private String ColorError = "32,32,32";
 
         private ArduinoCom arduinoCom;
+
+        private DateTime teamsLogChanged;
+        private long teamsLogSize;
 
         public settingsUI()
         {
@@ -61,6 +57,8 @@ namespace SkypeLight
                 arduinoCom.setComPort(cbComport.Text);
             }
 
+            doUpdate = true;
+
             timeBrightness.Value = Properties.Settings.Default.Time_Brightness;
 
             ColorRed = Properties.Settings.Default.ColorRed;
@@ -71,7 +69,7 @@ namespace SkypeLight
             ColorBlack = Properties.Settings.Default.ColorBlack;
             ColorError = Properties.Settings.Default.ColorError;
             checkBox1.Checked = Properties.Settings.Default.Show_Date;
-
+        
             timer1.Enabled = true;
 
             rbBlack.Checked = true;
@@ -98,166 +96,84 @@ namespace SkypeLight
 
         private bool checkSkype()
         {
-            if (lyncClient == null)
-            {
-                try
-                {
-                    lyncClient = LyncClient.GetClient();
-                    callbackEnabled = false;
-                }
-                catch (ClientNotFoundException clientNotFoundException)
-                {
-                    Console.WriteLine(clientNotFoundException);
-                    return false;
-                }
-                catch (NotStartedByUserException notStartedByUserException)
-                {
-                    Console.Out.WriteLine(notStartedByUserException);
-                    return false;
-                }
-                catch (LyncClientException lyncClientException)
-                {
-                    Console.Out.WriteLine(lyncClientException);
-                    return false;
-                }
-                catch (SystemException systemException)
-                {
-                    if (IsLyncException(systemException))
-                    {
-                        // Log the exception thrown by the Lync Model API.
-                        Console.WriteLine("Error: " + systemException);
-                        return false;
-                    }
-                    else
-                    {
-                        // Rethrow the SystemException which did not come from the Lync Model API.
-                        throw;
-                    }
-                }
-            }
-            if (!callbackEnabled)
-            {
-                if ((lyncClient.Self != null) && (lyncClient.Self.Contact != null))
-                {
-                    lyncClient.Self.Contact.ContactInformationChanged += Contact_ContactInformationChanged;
-                    callbackEnabled = true;
-                }
-            }
             return checkAvailability();
-
         }
 
         private bool checkAvailability()
         {
             if (!cbManual.Checked)
             {
-                if (lyncClient != null)
+                string logFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                logFile = Path.Combine(logFile, "Microsoft\\Teams\\logs.txt");
+                FileInfo fi = new FileInfo(logFile);
+                if (teamsLogChanged != null)
                 {
-
-                    ContactAvailability currentAvailability = 0;
-                    try
+                    if (teamsLogChanged.Equals(fi.LastWriteTime) && (teamsLogSize == fi.Length)) {
+                        Console.WriteLine(DateTime.Now.ToLongTimeString() + ": availability not changed");
+                        return true;
+                    }
+                }
+                Console.WriteLine(DateTime.Now.ToLongTimeString() + ": update availability");
+                teamsLogChanged = fi.LastWriteTime;
+                teamsLogSize = fi.Length;
+                string lastLine = "";
+                const Int32 BufferSize = 128;
+                try
+                {
+                    using (FileStream fileStream = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
-
-                        if ((lyncClient != null) && (lyncClient.Self != null) && (lyncClient.Self.Contact != null))
+                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
                         {
-                            currentAvailability = (ContactAvailability)
-                                                                      lyncClient.Self.Contact.GetContactInformation(ContactInformationType.Availability);
+                            String line;
+                            while ((line = streamReader.ReadLine()) != null)
+                            {
+                                if ((line.IndexOf("StatusIndicatorStateService:") > -1) && (line.IndexOf("Added") > -1))
+                                {
+                                    lastLine = line;
+                                }
+                            }
                         }
-                        else
-                        {
-                            return false;
-                        }
                     }
-                    catch (LyncClientException e)
+                    int pos = lastLine.IndexOf("Added") + "Added".Length;
+                    int pos2 = lastLine.IndexOf("(", pos);
+                    lastLine = lastLine.Substring(pos, pos2 - pos).Trim().ToLower();
+                    switch (lastLine)
                     {
-                        Console.WriteLine(e);
-                        return false;
+                        case "available":
+                            rbGreen.Checked = true;
+                            cbBlink.Checked = false;
+                            break;
+                        case "busy":
+                        case "inameeting":
+                            rbRed.Checked = true;
+                            cbBlink.Checked = false;
+                            break;
+                        case "berightback":
+                        case "away":
+                            rbYellow.Checked = true;
+                            cbBlink.Checked = false;
+                            break;
+                        case "donotdisturb":
+                        case "onthephone":
+                            rbRed.Checked = true;
+                            cbBlink.Checked = true;
+                            break;
+                        case "offline":
+                            rbBlack.Checked = true;
+                            cbBlink.Checked = false;
+                            break;
+                        default:
+                            break;
                     }
-                    catch (SystemException systemException)
-                    {
-                        if (IsLyncException(systemException))
-                        {
-                            // Log the exception thrown by the Lync Model API.
-                            Console.WriteLine("Error: " + systemException);
-                        }
-                        else
-                        {
-                            // Rethrow the SystemException which did not come from the Lync Model API.
-                            throw;
-                        }
-                        return false;
-                    }
-
-                    Debug.WriteLine("skype state:" + currentAvailability);
-                    if (currentAvailability.Equals(ContactAvailability.Free))
-                    {
-                        rbGreen.Checked = true;
-                        cbBlink.Checked = false;
-                    }
-                    if (currentAvailability.Equals(ContactAvailability.FreeIdle))
-                    {
-                        rbGreen.Checked = true;
-                        cbBlink.Checked = false;
-                    }
-                    if (currentAvailability.Equals(ContactAvailability.Busy))
-                    {
-                        rbRed.Checked = true;
-                        cbBlink.Checked = false;
-                    }
-                    if (currentAvailability.Equals(ContactAvailability.BusyIdle))
-                    {
-                        rbRed.Checked = true;
-                        cbBlink.Checked = true;
-                    }
-                    if (currentAvailability.Equals(ContactAvailability.DoNotDisturb))
-                    {
-                        rbRed.Checked = true;
-                        cbBlink.Checked = true;
-                    }
-                    if (currentAvailability.Equals(ContactAvailability.TemporarilyAway))
-                    {
-                        rbYellow.Checked = true;
-                        cbBlink.Checked = false;
-                    }
-                    if (currentAvailability.Equals(ContactAvailability.Away))
-                    {
-                        rbYellow.Checked = true;
-                        cbBlink.Checked = false;
-                    }
-                    if (currentAvailability.Equals(ContactAvailability.Offline))
-                    {
-                        rbYellow.Checked = true;
-                        cbBlink.Checked = false;
-                    }
+                    Console.WriteLine(String.Join(Environment.NewLine, lastLine));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("error reading teams log file: " + e.Message);
+                    return false;
                 }
             }
             return true;
-        }
-
-        void Contact_ContactInformationChanged(object sender, ContactInformationChangedEventArgs e)
-        {
-            doUpdate = true;
-        }
-
-        /// <summary>
-        /// Identify if a particular SystemException is one of the exceptions which may be thrown
-        /// by the Lync Model API.
-        /// </summary>
-        /// <param name="ex"></param>
-        /// <returns></returns>
-        private bool IsLyncException(SystemException ex)
-        {
-            return
-                ex is NotImplementedException ||
-                ex is ArgumentException ||
-                ex is NullReferenceException ||
-                ex is NotSupportedException ||
-                ex is ArgumentOutOfRangeException ||
-                ex is IndexOutOfRangeException ||
-                ex is InvalidOperationException ||
-                ex is TypeLoadException ||
-                ex is TypeInitializationException ||
-                ex is InvalidCastException;
         }
 
         private void rbRed_CheckedChanged(object sender, EventArgs e)
@@ -344,7 +260,6 @@ namespace SkypeLight
             lastSendet = DateTime.Now;
         }
 
-
         private void sendDate()
         {
             if (Properties.Settings.Default.Show_Date)
@@ -398,6 +313,12 @@ namespace SkypeLight
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            DateTime now = DateTime.Now;
+            if (doUpdate || ((count % 6000) == 0))
+            {
+                arduinoCom.sendDateTime(now);
+                Console.WriteLine(now.ToLongTimeString() + ": set datetime");
+            }
             if (doUpdate)
             {
                 checkAvailability();
@@ -409,7 +330,6 @@ namespace SkypeLight
                 lastSendet = DateTime.Now;
             }
 
-            DateTime now = DateTime.Now;
             if (Properties.Settings.Default.Show_Date)
             {
                 if (showdate)
@@ -451,6 +371,8 @@ namespace SkypeLight
             if ((count % 100) == 0)
             {
                 connectSkype();
+                SkypeInfo info = arduinoCom.getInfo();
+                lblInfo.Text = String.Format("{0}°C  {1,0}%", info.temperature, info.humidity);
             }
         }
 
@@ -545,16 +467,12 @@ namespace SkypeLight
         {
             Properties.Settings.Default.Time_Brightness = (int)timeBrightness.Value;
             Properties.Settings.Default.Save();
-            //            sendDate();
-            //            sendTime();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.Show_Date = checkBox1.Checked;
             Properties.Settings.Default.Save();
-            //            sendDate();
-            //            sendTime();
         }
     }
 }

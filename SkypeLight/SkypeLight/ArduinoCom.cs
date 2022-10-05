@@ -6,9 +6,17 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace SkypeLight
 {
+    public class SkypeInfo
+    {
+        public string time { get; set; }
+        public float temperature { get; set; }
+        public float humidity { get; set; }
+    }
+
     class ArduinoCom
     {
         static byte[] digitToSegment = { 0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x47, 0x79, 0x71 };
@@ -66,7 +74,46 @@ namespace SkypeLight
             }
             catch (InvalidOperationException e)
             {
-                Console.WriteLine("can't connet to skypelight.");
+                Console.WriteLine("can't connet to skypelight." + e.Message);
+            }
+        }
+        private string sendCommandWithResult(string command)
+        {
+            lastCommand = command;
+            try
+            {
+                open();
+                // read until buffer is empty
+                String line = "";
+                while (ComPort.BytesToRead > 0)
+                {
+                    line += (char)ComPort.ReadChar();
+                }
+                Debug.WriteLine(line);
+                line = "";
+                ComPort.WriteLine(command);
+                char c = ' ';
+                bool json = false;
+                while (c != '}')
+                {
+                    c = (char)ComPort.ReadChar();
+                    if (c == '{') {
+                        json = true;
+                    }
+                    if (json)
+                    {
+                    line += c;
+                    }
+                }
+                lastSendet = DateTime.Now;
+                Debug.WriteLine(command);
+                Debug.WriteLine(line);
+                return line;
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine("can't connet to skypelight." + e.Message);
+                return "";
             }
         }
 
@@ -81,7 +128,7 @@ namespace SkypeLight
                 if (comPort != null && !comPort.Equals(""))
                 {
                     ComPort.PortName = comPort;
-                    ComPort.BaudRate = 9600;
+                    ComPort.BaudRate = 115200;
                     try
                     {
                         ComPort.Open();
@@ -90,6 +137,7 @@ namespace SkypeLight
                     }
                     catch (Exception e)
                     {
+                        Console.WriteLine("can't connet to skypelight." + e.Message);
                     }
                 }
             }
@@ -203,5 +251,26 @@ namespace SkypeLight
             setSegment(index, digitToSegment[digit % 16]);
         }
 
+        public void sendDateTime(DateTime time)
+        {
+            string command = String.Format("z{0},{1},{2},{3},{4},{5}", time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second);
+            sendCommand(command);
+        }
+
+        public SkypeInfo getInfo()
+        {
+            string command = "?";
+            string json = sendCommandWithResult(command);
+            SkypeInfo info = new SkypeInfo();   
+            try
+            {
+                info = JsonSerializer.Deserialize<SkypeInfo>(json);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("error parsing json: " + e.Message);
+            }
+            return info;
+        }
     }
 }

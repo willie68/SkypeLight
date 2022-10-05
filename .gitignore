@@ -1,3 +1,6 @@
 /SkypeLight/SkypeLight/bin
 /SkypeLight/SkypeLight/obj
 /SkypeLight/SkypeLight/publish
+
+SkypeLight/.vs/
+packages/

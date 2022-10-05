@@ -1,3 +1,31 @@
+// (C) Wilfried Klaas (https://github.com/willie68/SkypeLight)
+// This is the arduino part of the skyplight. 
+// see readme for more information
+// Command interface:
+// RGB LEDs
+// verarbeiten der Daten vom Host, Format "#index,r,g,b['b']"
+// index: 0 für alle LEDs, 1..MAX_LEDS für eine einzelne LED
+// r: integer Wert der Farbe Rot 0..255
+// g: integer Wert der Farbe Grün 0..255
+// b: integer Wert der Farbe Blau 0..255
+// b: optionales Zeichen 'b' für blinkend
+// Segmentanzeige:
+// d15,249,109,249,56* means ESEL
+// format für Display d(b),d1,d2,d3,d4*
+// wobei b die Helligkeit von 0..7 ist, D1, D2, D3, D4 sind die einzelnen Stellen
+// D1,3,4 haben 7 segmente, D2 hat zus. als 8'tes den Doppelpunkt
+// Temperatur
+// ein einzelnes t zeigt die aktuelle Temperatur an
+// Helligkeit der 7-Seg Anzeige
+// ein b mit folgender Nummer setzt die Helligkeit der Anzeige, 0..15
+// Luftfeuchte
+// h zeigt die aktuelle Luftfeuchtigkeit
+// Zeit
+// z setzt die aktuelle Uhrzeit auf einen neuen Wert
+// Datum
+// r zeigt das aktuelle Datum an
+// Info
+// ? sendet die aktuellen Informationen
 #include <RTClib.h>
 
 #include <DHT.h>
@@ -36,7 +64,6 @@ byte easyValues[4] = { 249, 247, 109, 2 + 4 + 32 + 64 };
 byte nullValues[4] = { 0, 0, 0, 0 };
 byte deg[1] = { SEG_A + SEG_B + SEG_G + SEG_F };
 byte hum[1] = { SEG_B + SEG_C + SEG_E + SEG_F + SEG_G };
-
 byte displayBrightness = 15;
 
 void setup() {
@@ -45,7 +72,7 @@ void setup() {
   // NeoPixel Bibliothek starten
   pixels.begin();
   // Willkommensmeldung ausgeben
-  Serial.println("SkypeStatus V0.2");
+  Serial.println(F("SkypeStatus V0.2"));
 
   display.setBrightness(displayBrightness);
   for (byte i = 0; i < 4; i++) {
@@ -56,19 +83,8 @@ void setup() {
   dht.begin();
 
   if (!rtc.begin()) {
-    Serial.println("Couldn't find RTC");
+    Serial.println(F("Couldn't find RTC"));
     Serial.flush();
-    while (1) delay(10);
-  }
-
-  if (rtc.lostPower()) {
-    Serial.println("RTC lost power, let's set the time!");
-    // When time needs to be set on a new device, or after a power loss, the
-    // following line sets the RTC to the date & time this sketch was compiled
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // This line sets the RTC with an explicit date & time, for example to set
-    // January 21, 2014 at 3am you would call:
-    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
 }
 
@@ -111,7 +127,7 @@ void loop() {
     if (time > 60) {
       time = 0;
       connect = false;
-      Serial.println("no connection");
+      Serial.println(F("no connection"));
     }
     delay(1000);
   }
@@ -134,31 +150,6 @@ void showDHT() {
   Serial.print(t);
   Serial.println(F("°C "));
 }
-
-// RGB LEDs
-// verarbeiten der Daten vom Host, Format "#index,r,g,b['b']"
-// index: 0 für alle LEDs, 1..MAX_LEDS für eine einzelne LED
-// r: integer Wert der Farbe Rot 0..255
-// g: integer Wert der Farbe Grün 0..255
-// b: integer Wert der Farbe Blau 0..255
-// b: optionales Zeichen 'b' für blinkend
-// Segmentanzeige:
-// d15,249,109,249,56* means ESEL
-// format für Display d(b),d1,d2,d3,d4*
-// wobei b die Helligkeit von 0..7 ist, D1, D2, D3, D4 sind die einzelnen Stellen
-// D1,3,4 haben 7 segmente, D2 hat zus. als 8'tes den Doppelpunkt
-// Temperatur
-// ein einzelnes t zeigt die aktuelle Temperatur an
-// Helligkeit der 7-Seg Anzeige
-// ein b mit folgender Nummer setzt die Helligkeit der Anzeige, 0..15
-// Luftfeuchte
-// h zeigt die aktuelle Luftfeuchtigkeit
-// Zeit
-// z setzt die aktuelle Uhrzeit auf einen neuen Wert
-// Datum
-// r zeigt das aktuelle Datum an
-// Info
-// ? sendet die aktuellen Informationen
 
 void processPCData() {
   // erstes Zeichen muss ein '#' sein
@@ -275,8 +266,7 @@ void processPCData() {
     Serial.println("time set");
     showRTC();
   } else if (myChar == '?') {
-    showDHT();
-    showRTC();
+    outputInfo();
   }
 }
 
@@ -387,6 +377,36 @@ void clear() {
   }
   pixels.show();
 }
+// output the info message as json
+void outputInfo() {
+  Serial.print(F("{"));
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+
+  Serial.print(F("\"humidity\": "));
+  Serial.print(h);
+  Serial.print(F(",\"temperature\": "));
+  Serial.print(t);
+
+  DateTime now = rtc.now();
+
+// output date in format 2007-08-31T16:47
+  Serial.print(F(",\"time\": \""));
+  Serial.print(now.year(), DEC);
+  Serial.print('-');
+  Serial.print(now.month(), DEC);
+  Serial.print('-');
+  Serial.print(now.day(), DEC);
+  Serial.print("T");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+
+  Serial.println(F("\"}"));
+}
+
 // RTC functions
 void showRTC() {
   Serial.print("z: ");
