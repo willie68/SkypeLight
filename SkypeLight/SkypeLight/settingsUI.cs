@@ -109,11 +109,11 @@ namespace SkypeLight
                 if (teamsLogChanged != null)
                 {
                     if (teamsLogChanged.Equals(fi.LastWriteTime) && (teamsLogSize == fi.Length)) {
-                        Console.WriteLine(DateTime.Now.ToLongTimeString() + ": availability not changed");
+                        Debug.WriteLine(DateTime.Now.ToLongTimeString() + ": availability not changed");
                         return true;
                     }
                 }
-                Console.WriteLine(DateTime.Now.ToLongTimeString() + ": update availability");
+                Debug.WriteLine(DateTime.Now.ToLongTimeString() + ": update availability");
                 teamsLogChanged = fi.LastWriteTime;
                 teamsLogSize = fi.Length;
                 string lastLine = "";
@@ -165,7 +165,7 @@ namespace SkypeLight
                         default:
                             break;
                     }
-                    Console.WriteLine(String.Join(Environment.NewLine, lastLine));
+                    Debug.WriteLine(String.Join(Environment.NewLine, lastLine));
                 }
                 catch (Exception e)
                 {
@@ -317,7 +317,7 @@ namespace SkypeLight
             if (doUpdate || ((count % 6000) == 0))
             {
                 arduinoCom.sendDateTime(now);
-                Console.WriteLine(now.ToLongTimeString() + ": set datetime");
+                Debug.WriteLine(now.ToLongTimeString() + ": set datetime");
             }
             if (doUpdate)
             {
